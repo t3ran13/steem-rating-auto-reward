@@ -10,7 +10,7 @@ use GolosPhpEventListener\app\process\ProcessInterface;
 use MyApp\Db\RedisManager;
 
 
-class PostIsCreatedHandler extends HandlerAbstract
+class RatingGotRewardHandler extends HandlerAbstract
 {
     protected $priority = 15;
 
@@ -57,6 +57,8 @@ class PostIsCreatedHandler extends HandlerAbstract
             $ids = str_replace("app:events:{$listenerId}:",'', $key);
             list($blockN, $trxInBlock) = explode(':', $ids);
             $this->getDBManager()->eventDelete($listenerId, $blockN, $trxInBlock);
+            $event = json_decode($event, true);
+            echo PHP_EOL . ' --- listener with id=' . $listenerId . ' got event ' . print_r($event, true);
             echo PHP_EOL . ' --- listener with id=' . $listenerId . ' handle and deleted event with key=' . $key;
         }
 

@@ -10,7 +10,7 @@ use GolosPhpEventListener\app\process\BlockchainExplorerProcess;
 use GolosPhpEventListener\app\process\EventsHandlersProcess;
 use GolosPhpEventListener\app\process\MainProcess;
 use MyApp\Db\RedisManager;
-use MyApp\Handlers\PostIsCreatedHandler;
+use MyApp\Handlers\RatingGotRewardHandler;
 
 
 ini_set('display_errors', 1);
@@ -23,17 +23,19 @@ require __DIR__ . '/vendor/autoload.php';
 echo PHP_EOL . '------ StartApp.php ------' . PHP_EOL;
 
 $appConfig = new AppConfig();
-$appConfig->addListener(['op:1:voter' => 'fafnur', 'op:0' => 'vote'], new PostIsCreatedHandler());
-$appConfig->addListener(['op:0' => 'comment'], new PostIsCreatedHandler());
-$appConfig->addListener(['op:0' => 'vote'], new PostIsCreatedHandler());
+$appConfig->addListener(['op:1:author' => 't3ran13', 'op:0' => 'author_reward'], new RatingGotRewardHandler());
 
 $mainProcess = new MainProcess(
     $appConfig,
     New RedisManager()
 );
+
 $className = get_class(New RedisManager());
+$blockchainExplorerProcess = new BlockchainExplorerProcess($className);
+$blockchainExplorerProcess->setLastBlock(16146490);
+
 $mainProcess->processesList = [
-    new BlockchainExplorerProcess($className),
+    $blockchainExplorerProcess,
     new EventsHandlersProcess($className)
 ];
 $mainProcess->start();
