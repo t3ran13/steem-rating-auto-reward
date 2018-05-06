@@ -1,0 +1,27 @@
+version: "3"
+services:
+  php-fpm:
+    build:
+      context: ./docker/local
+      dockerfile: dockerfile-php7-fpm
+    ports:
+      - "9000:9000"
+    volumes:
+      - '.:/var/www/golos-event-listener'
+    environment:
+      - NODE_ENV=production
+      - REDIS_PSWD=${REDIS_PSWD}
+  redis:
+    image: redis:3
+    ports:
+      - "6379:6379"
+    command: [
+          "bash", "-c",
+          '
+           docker-entrypoint.sh
+           --requirepass ${REDIS_PSWD}
+           --appendonly yes
+          '
+    ]
+    volumes:
+      - './var/db/redis/data:/data'
