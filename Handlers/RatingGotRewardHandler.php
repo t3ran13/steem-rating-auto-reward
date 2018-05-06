@@ -1,7 +1,6 @@
 <?php
 
 
-
 namespace MyApp\Handlers;
 
 
@@ -9,7 +8,10 @@ use GolosPhpEventListener\app\handlers\HandlerAbstract;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use MyApp\Db\RedisManager;
 
-
+/**
+ *
+ * @method RedisManager getDBManager()
+ */
 class RatingGotRewardHandler extends HandlerAbstract
 {
     protected $priority = 15;
@@ -28,6 +30,7 @@ class RatingGotRewardHandler extends HandlerAbstract
     public function initSignalsHandlers()
     {
         pcntl_signal(SIGTERM, [$this, 'signalsHandlers']);
+        pcntl_signal(SIGINT, [$this, 'signalsHandlers']); //ctrl+c
         pcntl_signal(SIGHUP, [$this, 'signalsHandlers']); //restart process
     }
 
@@ -54,12 +57,26 @@ class RatingGotRewardHandler extends HandlerAbstract
         echo PHP_EOL . ' --- listener with id=' . $listenerId . ' have total events=' . count($events);
 
         foreach ($events as $key => $event) {
-            $ids = str_replace("app:events:{$listenerId}:",'', $key);
+            $ids = str_replace("app:events:{$listenerId}:", '', $key);
             list($blockN, $trxInBlock) = explode(':', $ids);
             $this->getDBManager()->eventDelete($listenerId, $blockN, $trxInBlock);
             $event = json_decode($event, true);
             echo PHP_EOL . ' --- listener with id=' . $listenerId . ' got event ' . print_r($event, true);
             echo PHP_EOL . ' --- listener with id=' . $listenerId . ' handle and deleted event with key=' . $key;
+
+            if (
+                isset($event['op'][1]['permlink'])
+                && strpos($event['op'][1]['permlink'], 'alternativnyi-top-golosa') === 0
+            ) {
+                $this->getDBManager()->ratingPostRewardAddToQueue(
+                    [
+                        'author'       => $event['op'][1]['author'],
+                        'permlink'     => $event['op'][1]['permlink'],
+                        'sbd_payout'   => $event['op'][1]['sbd_payout'],
+                        'steem_payout' => $event['op'][1]['steem_payout']
+                    ]
+                );
+            }
         }
 
         echo PHP_EOL . ' --- listener with id/pid=' . $listenerId . '/' . $this->getPid() . ' did work';
