@@ -12,6 +12,7 @@ use GolosPhpEventListener\app\process\MainProcess;
 use MyApp\Db\RedisManager;
 use MyApp\Handlers\RatingGotRewardHandler;
 use MyApp\Processes\RatingRewardUsersQueueMakerProcess;
+use MyApp\Processes\RatingRewardUsersSenderProcess;
 
 
 ini_set('display_errors', 1);
@@ -38,7 +39,8 @@ $blockchainExplorerProcess->setLastBlock(16146490);
 $mainProcess->processesList = [
     $blockchainExplorerProcess,
     new EventsHandlersProcess($className),
-    new RatingRewardUsersQueueMakerProcess()
+    new RatingRewardUsersQueueMakerProcess(),
+    new RatingRewardUsersSenderProcess()
 ];
 $mainProcess->start();
 
