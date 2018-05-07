@@ -56,4 +56,39 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
 
         return $status;
     }
+
+    /**
+     * @return int
+     */
+    public function ratingUsersRewardGetQueueLength()
+    {
+        return $this->connect->llen("myapp:rewards-users-list");
+    }
+
+    /**
+     * @param int $n
+     *
+     * @return array list of json
+     */
+    public function ratingUsersRewardGetFirstNFromQueue($n)
+    {
+        $listJson = $this->connect->lRange("myapp:rewards-users-list", 0, $n - 1);
+        $list = [];
+
+        foreach ($listJson as $json) {
+            $list[] = json_decode($json, true);
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function ratingUsersRewardRemoveFromQueue($data)
+    {
+        return $this->connect->lRem("myapp:rewards-users-list", 0, json_encode($data)) === 0 ? false : true;
+    }
 }
