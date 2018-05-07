@@ -18,8 +18,9 @@ use MyApp\Db\RedisManager;
  */
 class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
 {
+    protected $isRunning = true;
     protected $rewardUserPercent = 80;
-    protected $priority = 15;
+    protected $priority = 16;
 
     /**
      * run before process start
@@ -63,7 +64,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
 
         $rewardPart = round($this->rewardUserPercent / 100, 3);
 
-        while ($first !== false) {
+        while ($this->isRunning && $first !== false) {
 
             $connector = new GolosWSConnector();
 
@@ -115,7 +116,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
      */
     public function isStartNeeded()
     {
-        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is start needed=' . print_r($this->getDBManager()->ratingPostRewardGetQueueLength() > 0, true);
+//        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is start needed=' . print_r($this->getDBManager()->ratingPostRewardGetQueueLength() > 0, true);
         return $this->getStatus() === ProcessInterface::STATUS_RUN
             && $this->getDBManager()->ratingPostRewardGetQueueLength() > 0;
     }
