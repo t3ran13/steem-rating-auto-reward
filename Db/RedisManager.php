@@ -36,11 +36,13 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
     }
 
     /**
+     * @param array $data
+     *
      * @return bool
      */
-    public function ratingPostRewardRemoveFirstFromQueue()
+    public function ratingPostRewardRemovePostFromQueue($data)
     {
-        return $this->connect->lPop("myapp:rewards-post-list") === false ? false : true;
+        return $this->connect->lRem("myapp:rewards-post-list", 0, json_encode($data)) === 0 ? false : true;
     }
 
     /**

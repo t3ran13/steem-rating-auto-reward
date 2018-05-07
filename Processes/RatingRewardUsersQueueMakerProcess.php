@@ -101,7 +101,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     }
                 }
             }
-            $this->getDBManager()->ratingPostRewardRemoveFirstFromQueue();
+            $this->getDBManager()->ratingPostRewardRemovePostFromQueue($first);
             $first = $this->getDBManager()->ratingPostRewardGetFirstFromQueue();
         }
 
