@@ -1,7 +1,6 @@
 <?php
 
 
-
 namespace MyApp\Processes;
 
 
@@ -18,9 +17,11 @@ use MyApp\Db\RedisManager;
  */
 class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
 {
-    protected $isRunning = true;
+    protected $isRunning         = true;
     protected $rewardUserPercent = 80;
-    protected $priority = 16;
+    protected $priority          = 16;
+    protected $memoRatingReward  = 'Награждения авторов из Альтернативного ТОПа Голоса {post_link}';
+    protected $postLink          = 'https://goldvoice.club/{category}/{author}/{permlink}';
 
     /**
      * run before process start
@@ -80,6 +81,20 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
 
             $meta = json_decode($data['json_metadata'], true);
             $totalUsers = count($meta['users']);
+            $postLink = str_replace(
+                [
+                    '{category}',
+                    '{author}',
+                    '{permlink}'
+                ],
+                [
+                    $first['category'],
+                    $first['author'],
+                    $first['permlink'],
+                ],
+                $this->postLink
+            );
+            $memoRatingReward = str_replace('{post_link}', $postLink, $this->memoRatingReward);
             if ($totalUsers > 0) {
                 // got value in 1000 times more
                 $gbgReward = floor(str_replace(' GBG', '', $first['sbd_payout']) * $rewardPart / $totalUsers * 1000);
@@ -95,8 +110,9 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     }
                     foreach ($meta['users'] as $user) {
                         $data = [
-                            'author' => $user,
+                            'author'  => $user,
                             'rewards' => $rewards,
+                            'memo'    => $memoRatingReward,
                         ];
                         $this->getDBManager()->ratingUsersRewardAddToQueue($data);
                     }
