@@ -13,7 +13,7 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
      */
     public function ratingPostRewardAddToQueue($data)
     {
-        $status = $this->connect->rPush("myapp:rewards-post-list", json_encode($data));
+        $status = $this->connect->rPush("myapp:rewards-post-list", json_encode($data, JSON_UNESCAPED_UNICODE));
 
         return $status;
     }
@@ -42,7 +42,7 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
      */
     public function ratingPostRewardRemovePostFromQueue($data)
     {
-        return $this->connect->lRem("myapp:rewards-post-list", 0, json_encode($data)) === 0 ? false : true;
+        return $this->connect->lRem("myapp:rewards-post-list", 0, json_encode($data, JSON_UNESCAPED_UNICODE)) === 0 ? false : true;
     }
 
     /**
@@ -52,7 +52,7 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
      */
     public function ratingUsersRewardAddToQueue($data)
     {
-        $status = $this->connect->rPush("myapp:rewards-users-list", json_encode($data));
+        $status = $this->connect->rPush("myapp:rewards-users-list", json_encode($data, JSON_UNESCAPED_UNICODE));
 
         return $status;
     }
@@ -89,6 +89,6 @@ class RedisManager extends \GolosPhpEventListener\app\db\RedisManager
      */
     public function ratingUsersRewardRemoveFromQueue($data)
     {
-        return $this->connect->lRem("myapp:rewards-users-list", 0, json_encode($data)) === 0 ? false : true;
+        return $this->connect->lRem("myapp:rewards-users-list", 0, json_encode($data, JSON_UNESCAPED_UNICODE)) === 0 ? false : true;
     }
 }
