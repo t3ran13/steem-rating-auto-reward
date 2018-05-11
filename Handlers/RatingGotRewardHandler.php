@@ -52,17 +52,14 @@ class RatingGotRewardHandler extends HandlerAbstract
         pcntl_setpriority($this->priority, getmypid());
 
         $listenerId = $this->getId();
-        echo PHP_EOL . ' --- listener with id/pid=' . $listenerId . '/' . $this->getPid() . ' is running';
+//        echo PHP_EOL . ' --- listener with id/pid=' . $listenerId . '/' . $this->getPid() . ' is running';
         $events = $this->getDBManager()->eventsListByListenerId($listenerId);
-        echo PHP_EOL . ' --- listener with id=' . $listenerId . ' have total events=' . count($events);
-
         foreach ($events as $key => $event) {
             $ids = str_replace("app:events:{$listenerId}:", '', $key);
             list($blockN, $trxInBlock) = explode(':', $ids);
             $this->getDBManager()->eventDelete($listenerId, $blockN, $trxInBlock);
             $event = json_decode($event, true);
-            echo PHP_EOL . ' --- listener with id=' . $listenerId . ' got event ' . print_r($event, true);
-            echo PHP_EOL . ' --- listener with id=' . $listenerId . ' handle and deleted event with key=' . $key;
+//            echo PHP_EOL . ' --- listener with id=' . $listenerId . ' handle and deleted event with key=' . $key;
 
             if (
                 isset($event['op'][1]['permlink'])
@@ -79,7 +76,8 @@ class RatingGotRewardHandler extends HandlerAbstract
             }
         }
 
-        echo PHP_EOL . ' --- listener with id/pid=' . $listenerId . '/' . $this->getPid() . ' did work';
+        $eventsTotal = count($events);
+        echo PHP_EOL . date('Y.m.d H:i:s') .  " RatingGotRewardHandler handled {$eventsTotal} events";
     }
 
     /**
@@ -89,7 +87,12 @@ class RatingGotRewardHandler extends HandlerAbstract
      */
     public function isStartNeeded()
     {
-        return $this->getStatus() === ProcessInterface::STATUS_RUN
-            && $this->getDBManager()->eventsCountByListenerId($this->getId()) > 0;
+        $status = $this->getStatus();
+        return $status === ProcessInterface::STATUS_RUN
+            || (
+                $status === ProcessInterface::STATUS_STOPPED
+                && $this->getMode() === ProcessInterface::MODE_REPEAT
+                && $this->getDBManager()->eventsCountByListenerId($this->getId()) > 0
+            );
     }
 }
