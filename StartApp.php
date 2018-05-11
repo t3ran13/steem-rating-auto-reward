@@ -9,6 +9,7 @@ use GolosPhpEventListener\app\AppConfig;
 use GolosPhpEventListener\app\process\BlockchainExplorerProcess;
 use GolosPhpEventListener\app\process\EventsHandlersProcess;
 use GolosPhpEventListener\app\process\MainProcess;
+use GolosPhpEventListener\app\process\ProcessInterface;
 use MyApp\Db\RedisManager;
 use MyApp\Handlers\RatingGotRewardHandler;
 use MyApp\Processes\RatingRewardUsersQueueMakerProcess;
@@ -31,10 +32,12 @@ $mainProcess = new MainProcess(
     $appConfig,
     New RedisManager()
 );
+//$mainProcess->ClearAllData();
 
 $className = get_class(New RedisManager());
 $blockchainExplorerProcess = new BlockchainExplorerProcess($className);
-$blockchainExplorerProcess->setLastBlock(16146490);
+$blockchainExplorerProcess->setLastBlock(16288610);
+//$blockchainExplorerProcess->setLastBlock(16238400);
 
 $mainProcess->processesList = [
     $blockchainExplorerProcess,
@@ -42,6 +45,21 @@ $mainProcess->processesList = [
     new RatingRewardUsersQueueMakerProcess(),
     new RatingRewardUsersSenderProcess()
 ];
-$mainProcess->start();
+
+
+try {
+    $mainProcess->start();
+
+} catch (\Exception $e) {
+
+    $msg = '"' . $e->getMessage() . '" ' . $e->getTraceAsString();
+    echo PHP_EOL . ' --- mainProcess got exception ' . $msg . PHP_EOL;
+    $mainProcess->errorInsertToLog(date('Y-m-d H:i:s') . '   ' . $msg);
+
+} finally {
+
+    $mainProcess->setStatus(ProcessInterface::STATUS_STOPPED);
+    exit(1);
+}
 
 echo PHP_EOL . PHP_EOL;
