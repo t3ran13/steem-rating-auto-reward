@@ -59,7 +59,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
         pcntl_setpriority($this->priority, getmypid());
 
         $listenerId = $this->getId();
-        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is running';
+//        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is running';
         $first = $this->getDBManager()->ratingPostRewardGetFirstFromQueue();
 //        echo PHP_EOL . ' - first' . print_r($first, true);
 
@@ -103,26 +103,44 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                 if ($gbgReward > 0 || $golosReward > 0) {
                     $rewards = [];
                     if ($gbgReward > 0) {
-                        $rewards[] = round($gbgReward / 1000, 3) . ' GBG';
+                        $rewards[] = number_format($gbgReward / 1000, 3, '.', '') . ' GBG';
                     }
                     if ($golosReward > 0) {
-                        $rewards[] = round($golosReward / 1000, 3) . ' GOLOS';
+                        $rewards[] = number_format($golosReward / 1000, 3, '.', '') . ' GOLOS';
                     }
                     foreach ($meta['users'] as $user) {
-                        $data = [
+                        $dataForReward = [
                             'author'  => $user,
                             'rewards' => $rewards,
                             'memo'    => $memoRatingReward,
                         ];
-                        $this->getDBManager()->ratingUsersRewardAddToQueue($data);
+                        $this->getDBManager()->ratingUsersRewardAddToQueue($dataForReward);
                     }
+                    $usersTotal = count($meta['users']);
+                    echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersTotal} users added for reward from post /{$data['category']}/@{$data['author']}/{$data['permlink']}";
                 }
             }
             $this->getDBManager()->ratingPostRewardRemovePostFromQueue($first);
             $first = $this->getDBManager()->ratingPostRewardGetFirstFromQueue();
         }
 
-        echo PHP_EOL . ' - RatingRewardQueueMakerProcess did work';
+//        echo PHP_EOL . ' - RatingRewardQueueMakerProcess did work';
+    }
+
+    /**
+     * ask process to start
+     *
+     * @return bool
+     */
+    public function isStartNeeded()
+    {
+        $status = $this->getStatus();
+        return $status === ProcessInterface::STATUS_RUN
+            || (
+                $status === ProcessInterface::STATUS_STOPPED
+                && $this->getMode() === ProcessInterface::MODE_REPEAT
+                && $this->getDBManager()->ratingPostRewardGetQueueLength()
+            );
     }
 
     /**
