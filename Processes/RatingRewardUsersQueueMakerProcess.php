@@ -88,9 +88,9 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     '{permlink}'
                 ],
                 [
-                    $first['category'],
-                    $first['author'],
-                    $first['permlink'],
+                    $data['category'],
+                    $data['author'],
+                    $data['permlink']
                 ],
                 $this->postLink
             );
