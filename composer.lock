@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d5ad90d5932706999e82bf9c3e213f3",
+    "content-hash": "c0f3d5fb5abda287b0257ee488f000cb",
     "packages": [
         {
             "name": "bitwasp/secp256k1-php",
@@ -52,45 +52,6 @@
                 "secp256k1"
             ],
             "time": "2018-02-17T14:24:05+00:00"
-        },
-        {
-            "name": "fguillot/json-rpc",
-            "version": "v1.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/fguillot/JsonRPC.git",
-                "reference": "fa075cc89c1ae5f0c4123d27772e5caeac045946"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fguillot/JsonRPC/zipball/fa075cc89c1ae5f0c4123d27772e5caeac045946",
-                "reference": "fa075cc89c1ae5f0c4123d27772e5caeac045946",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.8.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "JsonRPC": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Frédéric Guillot"
-                }
-            ],
-            "description": "Simple Json-RPC client/server library that just works",
-            "homepage": "https://github.com/fguillot/JsonRPC",
-            "time": "2018-02-21T23:58:51+00:00"
         },
         {
             "name": "predis/predis",
@@ -233,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/golos-php-event-listener.git",
-                "reference": "3b50b3b57ae75e662dde6b3c64010d5832e1c3db"
+                "reference": "e125f085519b39bdc988381712ea8ae324acb49d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/3b50b3b57ae75e662dde6b3c64010d5832e1c3db",
-                "reference": "3b50b3b57ae75e662dde6b3c64010d5832e1c3db",
+                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/e125f085519b39bdc988381712ea8ae324acb49d",
+                "reference": "e125f085519b39bdc988381712ea8ae324acb49d",
                 "shasum": ""
             },
             "require": {
@@ -269,25 +230,24 @@
                 "Steemit",
                 "event listener"
             ],
-            "time": "2018-05-06T09:17:13+00:00"
+            "time": "2018-05-11T09:44:35+00:00"
         },
         {
             "name": "t3ran13/php-graphene-node-client",
-            "version": "v4.0.2",
+            "version": "v4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/php-graphene-node-client.git",
-                "reference": "15dcfb8d772acc30ee8edf399fc499fc9b60eee1"
+                "reference": "114075f2ec81e3a177268c30cf30e39008cc9734"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/15dcfb8d772acc30ee8edf399fc499fc9b60eee1",
-                "reference": "15dcfb8d772acc30ee8edf399fc499fc9b60eee1",
+                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/114075f2ec81e3a177268c30cf30e39008cc9734",
+                "reference": "114075f2ec81e3a177268c30cf30e39008cc9734",
                 "shasum": ""
             },
             "require": {
                 "bitwasp/secp256k1-php": "^0.1.2",
-                "fguillot/json-rpc": "@stable",
                 "php": "^7.0",
                 "stephenhill/base58": "^1.1",
                 "t3ran13/bytebuffer": "^1.0",
@@ -317,7 +277,7 @@
                 "Steemit",
                 "Web Socket client for graphene node"
             ],
-            "time": "2018-04-13T18:44:53+00:00"
+            "time": "2018-05-08T22:37:44+00:00"
         },
         {
             "name": "textalk/websocket",

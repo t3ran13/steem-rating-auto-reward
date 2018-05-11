@@ -1,6 +1,6 @@
 {
     "require": {
-        "t3ran13/golos-php-event-listener": "master-dev",
+        "t3ran13/golos-php-event-listener": "dev-master",
         "t3ran13/php-graphene-node-client": "^4.0"
     }
 }
