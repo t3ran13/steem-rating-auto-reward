@@ -126,18 +126,6 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
     }
 
     /**
-     * ask process to start
-     *
-     * @return bool
-     */
-    public function isStartNeeded()
-    {
-//        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is start needed=' . print_r($this->getDBManager()->ratingPostRewardGetQueueLength() > 0, true);
-        return $this->getStatus() === ProcessInterface::STATUS_RUN
-            && $this->getDBManager()->ratingPostRewardGetQueueLength() > 0;
-    }
-
-    /**
      * clear parent resourses in child process
      *
      * @return void
