@@ -11,6 +11,8 @@ services:
     environment:
       - NODE_ENV=production
       - REDIS_PSWD=${REDIS_PSWD}
+      - REWARD_POOL_NAME=${REWARD_POOL_NAME}
+      - REWARD_POOL_WIF=${REWARD_POOL_WIF}
   redis:
     image: redis:3
     ports:
