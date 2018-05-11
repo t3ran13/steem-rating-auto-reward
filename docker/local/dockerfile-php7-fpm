@@ -7,12 +7,37 @@ ENV PHP_REDIS_VERSION 3.1.4
 RUN apt-get update && apt-get install -y \
     zip \
     git \
+    automake \
+    libtool \
+    libgmp-dev \
+    && docker-php-ext-install gmp \
     && docker-php-ext-install posix \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure pcntl --enable-pcntl
 
 #install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+#install secp256k1-php
+RUN  cd ~  && \
+    curl -#L https://github.com/bitcoin-core/secp256k1/archive/master.zip > file.zip && \
+    unzip file.zip && \
+    rm file.zip && \
+    cd secp256k1-master && \
+    ./autogen.sh && \
+    ./configure --enable-experimental --enable-module-ecdh --enable-module-recovery && \
+    make && \
+    make install
+RUN  cd ~  && \
+    curl -#L https://github.com/Bit-Wasp/secp256k1-php/archive/v0.1.2.zip > file.zip && \
+    unzip file.zip && \
+    rm file.zip && \
+    cd secp256k1-php-0.1.2/secp256k1 && \
+    phpize && \
+    ./configure --with-secp256k1 && \
+    make && \
+    make install
+RUN echo "extension=secp256k1.so" > /usr/local/etc/php/conf.d/secp256k1.ini
 
 RUN chown -R www-data:www-data /var/www
 
