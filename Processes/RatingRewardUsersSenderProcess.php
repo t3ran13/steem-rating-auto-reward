@@ -8,8 +8,9 @@ namespace MyApp\Processes;
 use GolosPhpEventListener\app\process\ProcessAbstract;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use GrapheneNodeClient\Commands\CommandQueryData;
-use GrapheneNodeClient\Commands\Single\GetContentCommand;
+use GrapheneNodeClient\Commands\Single\BroadcastTransactionSynchronousCommand;
 use GrapheneNodeClient\Connectors\WebSocket\GolosWSConnector;
+use GrapheneNodeClient\Tools\Transaction;
 use MyApp\Db\RedisManager;
 
 /**
@@ -19,7 +20,20 @@ use MyApp\Db\RedisManager;
 class RatingRewardUsersSenderProcess extends ProcessAbstract
 {
     protected $isRunning = true;
+    private $rewardPoolName;
+    private $rewardPoolWif;
     protected $priority = 17;
+
+    /**
+     * RatingRewardUsersSenderProcess constructor.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->rewardPoolName = getenv('REWARD_POOL_NAME');
+        $this->rewardPoolWif = getenv('REWARD_POOL_WIF');
+    }
 
     /**
      * run before process start
@@ -56,30 +70,58 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
     {
         pcntl_setpriority($this->priority, getmypid());
 
-        $listenerId = $this->getId();
-        echo PHP_EOL . ' - RatingRewardUsersSenderProcess is running';
+        echo PHP_EOL . date('Y.m.d H:i:s') . ' RatingRewardUsersSenderProcess is running';
+
         $total = $this->getDBManager()->ratingUsersRewardGetQueueLength();
+        $connector = null;
+        $command = null;
+        if ($total > 0) {
+            $connector = new GolosWSConnector();
+            $command = new BroadcastTransactionSynchronousCommand($connector);
+        }
         for ($i = 50; $this->isRunning && ($i < $total || $i - $total < 50); $i += 50) {
             $list = $this->getDBManager()->ratingUsersRewardGetFirstNFromQueue(50);
-            echo PHP_EOL . ' - users=' . print_r($list, true);
-            foreach ($list as $data) {
-                $this->getDBManager()->ratingUsersRewardRemoveFromQueue($data);
-            }
 
-//            $connector = new GolosWSConnector();
-//
-//            $commandQuery = new CommandQueryData();
-//            $commandQuery->setParamByKey('0', $first['author']);//blockNum
-//            $commandQuery->setParamByKey('1', $first['permlink']);//onlyVirtual
-//
-//            $command = new GetContentCommand($connector);
-//            $data = $command->execute(
-//                $commandQuery,
-//                'result'
-//            );
+            //transfer agregation to few users
+            $chainName = $connector->getPlatform();
+            /** @var CommandQueryData $tx */
+            $tx = Transaction::init($connector);
+            $opNumber = 0;
+            foreach ($list as $data) {
+                foreach ($data['rewards'] as $reward) {
+                    $tx->setParamByKey(
+                        '0:operations:' . ($opNumber++),
+                        [
+                            'transfer',
+                            [
+                                'from'   => $this->rewardPoolName,
+                                'to'     => $data['author'],
+                                'amount' => $reward,
+                                'memo'   => $data['memo']
+                            ]
+                        ]
+                    );
+                    break;
+                }
+            }
+            Transaction::sign($chainName, $tx, ['active' => $this->rewardPoolWif]);
+            $answer = $command->execute(
+                $tx
+            );
+
+            if (isset($answer['result']['block_num']) && $answer['result']['block_num'] > 0) {
+                foreach ($list as $data) {
+                    $this->getDBManager()->ratingUsersRewardRemoveFromQueue($data);
+                }
+                $usersTotal = count($list);
+                echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersTotal} users got reward in block {$answer['result']['block_num']}";
+            } else {
+                echo PHP_EOL . date('Y.m.d H:i:s') . ' - error during sending tokens ';
+                //log about error
+            }
         }
 
-        echo PHP_EOL . ' - RatingRewardUsersSenderProcess did work';
+        echo PHP_EOL . date('Y.m.d H:i:s') . ' RatingRewardUsersSenderProcess did work';
     }
 
     /**
@@ -89,9 +131,13 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      */
     public function isStartNeeded()
     {
-        echo PHP_EOL . ' - RatingRewardUsersSenderProcess is start needed=' . print_r($this->getDBManager()->ratingPostRewardGetQueueLength() > 0, true);
-        return $this->getStatus() === ProcessInterface::STATUS_RUN
-            && $this->getDBManager()->ratingUsersRewardGetQueueLength() > 0;
+        $status = $this->getStatus();
+        return $status === ProcessInterface::STATUS_RUN
+            || (
+                $status === ProcessInterface::STATUS_STOPPED
+                && $this->getMode() === ProcessInterface::MODE_REPEAT
+                && $this->getDBManager()->ratingUsersRewardGetQueueLength()
+            );
     }
 
     /**
