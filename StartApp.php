@@ -49,8 +49,7 @@ if (
 
     $className = get_class($dbRedis);
     $blockchainExplorerProcess = new BlockchainExplorerProcess($className);
-    $blockchainExplorerProcess->setLastBlock(16288610);
-//$blockchainExplorerProcess->setLastBlock(16238400);
+    $blockchainExplorerProcess->setLastBlock(getenv('LAST_BLOCK'));
 
     $mainProcess->processesList = [
         $blockchainExplorerProcess,

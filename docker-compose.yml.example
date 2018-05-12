@@ -1,6 +1,8 @@
 version: "3"
 services:
   redis:
+    #cpu_percent: 20
+    #mem_limit: 256m
     image: redis:3
     ports:
       - "6379:6379"
@@ -15,6 +17,8 @@ services:
     volumes:
       - './var/db/redis/data:/data'
   php-fpm:
+    #cpu_percent: 15
+    #mem_limit: 256m
     build:
       context: ./docker/local
       dockerfile: dockerfile-php7-fpm
@@ -27,6 +31,7 @@ services:
       - REDIS_PSWD=${REDIS_PSWD}
       - REWARD_POOL_NAME=${REWARD_POOL_NAME}
       - REWARD_POOL_WIF=${REWARD_POOL_WIF}
+      - LAST_BLOCK=${LAST_BLOCK}
     depends_on:
       - "redis"
   cron:
@@ -38,7 +43,7 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock'
     command:
       - 'start-cron'
-      - '\*/5 \* \* \* \* /usr/local/bin/docker exec --user www-data -i ratingautorewards_php-fpm_1 bash -c "php /var/www/golos-event-listener/StartApp.php" >> /var/log/cron/cron-auto-reward.log 2>&1'
+      - '\*/5 \* \* \* \* /usr/local/bin/docker exec --user www-data -i golosratingautoreward_php-fpm_1 bash -c "php /var/www/golos-event-listener/StartApp.php" >> /var/log/cron/cron-auto-reward.log 2>&1'
     depends_on:
       - "php-fpm"
       - "redis"
