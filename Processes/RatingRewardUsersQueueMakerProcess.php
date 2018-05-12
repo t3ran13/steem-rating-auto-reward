@@ -21,7 +21,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
     protected $rewardUserPercent = 80;
     protected $priority          = 16;
     protected $memoRatingReward  = 'Награждения авторов из Альтернативного ТОПа Голоса {post_link}';
-    protected $postLink          = 'https://goldvoice.club/{category}/{author}/{permlink}';
+    protected $postLink          = 'https://goldvoice.club/{category}/@{author}/{permlink}';
 
     /**
      * run before process start
