@@ -1,18 +1,5 @@
 version: "3"
 services:
-  php-fpm:
-    build:
-      context: ./docker/local
-      dockerfile: dockerfile-php7-fpm
-    ports:
-      - "9000:9000"
-    volumes:
-      - '.:/var/www/golos-event-listener'
-    environment:
-      - NODE_ENV=production
-      - REDIS_PSWD=${REDIS_PSWD}
-      - REWARD_POOL_NAME=${REWARD_POOL_NAME}
-      - REWARD_POOL_WIF=${REWARD_POOL_WIF}
   redis:
     image: redis:3
     ports:
@@ -27,3 +14,31 @@ services:
     ]
     volumes:
       - './var/db/redis/data:/data'
+  php-fpm:
+    build:
+      context: ./docker/local
+      dockerfile: dockerfile-php7-fpm
+    ports:
+      - "9000:9000"
+    volumes:
+      - '.:/var/www/golos-event-listener'
+    environment:
+      - NODE_ENV=production
+      - REDIS_PSWD=${REDIS_PSWD}
+      - REWARD_POOL_NAME=${REWARD_POOL_NAME}
+      - REWARD_POOL_WIF=${REWARD_POOL_WIF}
+    depends_on:
+      - "redis"
+  cron:
+    build:
+      context: ./docker/local
+      dockerfile: dockerfile-cron
+    volumes:
+      - './var/log/cron:/var/log/cron'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    command:
+      - 'start-cron'
+      - '\* \* \* \* \* /usr/local/bin/docker exec --user www-data -i ratingautorewards_php-fpm_1 bash -c "php /var/www/golos-event-listener/StartApp.php" >> /var/log/cron/cron-auto-reward.log 2>&1'
+    depends_on:
+      - "php-fpm"
+      - "redis"
