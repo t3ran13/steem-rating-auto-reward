@@ -38,7 +38,7 @@ services:
       - '/var/run/docker.sock:/var/run/docker.sock'
     command:
       - 'start-cron'
-      - '\* \* \* \* \* /usr/local/bin/docker exec --user www-data -i ratingautorewards_php-fpm_1 bash -c "php /var/www/golos-event-listener/StartApp.php" >> /var/log/cron/cron-auto-reward.log 2>&1'
+      - '\*/5 \* \* \* \* /usr/local/bin/docker exec --user www-data -i ratingautorewards_php-fpm_1 bash -c "php /var/www/golos-event-listener/StartApp.php" >> /var/log/cron/cron-auto-reward.log 2>&1'
     depends_on:
       - "php-fpm"
       - "redis"

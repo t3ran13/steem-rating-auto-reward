@@ -36,7 +36,7 @@ $mainProcess = new MainProcess(
 );
 //$mainProcess->ClearAllData();
 
-$currentDatetime = (new \DateTime())->sub(new \DateInterval('PT0H3M'))->format('Y-m-d H:i:s');
+$currentDatetime = (new \DateTime())->sub(new \DateInterval('PT0H30M'))->format('Y-m-d H:i:s');
 if (
     $mainProcess->getStatus() === ProcessInterface::STATUS_STOPPED
     || $mainProcess->getStatus() === null
