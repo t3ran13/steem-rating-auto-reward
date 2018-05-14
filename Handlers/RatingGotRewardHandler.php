@@ -63,7 +63,7 @@ class RatingGotRewardHandler extends HandlerAbstract
 
             if (
                 isset($event['op'][1]['permlink'])
-                && strpos($event['op'][1]['permlink'], 'alternativnyi-top-golosa') === 0
+                && strpos($event['op'][1]['permlink'], 'the-alternative-steem-tops') === 0
             ) {
                 $this->getDBManager()->ratingPostRewardAddToQueue(
                     [

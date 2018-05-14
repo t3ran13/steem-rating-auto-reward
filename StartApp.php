@@ -6,12 +6,12 @@ namespace MyApp;
 
 
 use GolosPhpEventListener\app\AppConfig;
-use GolosPhpEventListener\app\process\BlockchainExplorerProcess;
 use GolosPhpEventListener\app\process\EventsHandlersProcess;
 use GolosPhpEventListener\app\process\MainProcess;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use MyApp\Db\RedisManager;
 use MyApp\Handlers\RatingGotRewardHandler;
+use MyApp\Processes\BlockchainExplorerProcess;
 use MyApp\Processes\RatingRewardUsersQueueMakerProcess;
 use MyApp\Processes\RatingRewardUsersSenderProcess;
 
