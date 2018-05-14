@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/golos-php-event-listener.git",
-                "reference": "4fccd2ab851bda680075b550aafe39fbcdebd992"
+                "reference": "c6b978782415b722a52ef5a17f9d6b2f9bbb4ae0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/4fccd2ab851bda680075b550aafe39fbcdebd992",
-                "reference": "4fccd2ab851bda680075b550aafe39fbcdebd992",
+                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/c6b978782415b722a52ef5a17f9d6b2f9bbb4ae0",
+                "reference": "c6b978782415b722a52ef5a17f9d6b2f9bbb4ae0",
                 "shasum": ""
             },
             "require": {
@@ -230,7 +230,7 @@
                 "Steemit",
                 "event listener"
             ],
-            "time": "2018-05-12T09:16:44+00:00"
+            "time": "2018-05-13T11:15:00+00:00"
         },
         {
             "name": "t3ran13/php-graphene-node-client",
