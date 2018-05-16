@@ -10,6 +10,7 @@ use GolosPhpEventListener\app\process\EventsHandlersProcess;
 use GolosPhpEventListener\app\process\MainProcess;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use MyApp\Db\RedisManager;
+use MyApp\Handlers\GotTransferHandler;
 use MyApp\Handlers\RatingGotRewardHandler;
 use MyApp\Processes\BlockchainExplorerProcess;
 use MyApp\Processes\RatingRewardUsersQueueMakerProcess;
@@ -27,6 +28,7 @@ echo PHP_EOL . '------ StartApp.php ------';
 
 $appConfig = new AppConfig();
 $appConfig->addListener(['op:1:author' => 't3ran13', 'op:0' => 'author_reward'], new RatingGotRewardHandler());
+$appConfig->addListener(['op:1:to' => getenv('REWARD_POOL_NAME'), 'op:0' => 'transfer'], new GotTransferHandler());
 
 
 $dbRedis = New RedisManager();
@@ -49,7 +51,7 @@ if (
 
     $className = get_class($dbRedis);
     $blockchainExplorerProcess = new BlockchainExplorerProcess($className);
-    $blockchainExplorerProcess->setLastBlock(getenv('LAST_BLOCK'));
+    $blockchainExplorerProcess->setLastBlock(getenv('LAST_BLOCK')); //22429300
 
     $mainProcess->processesList = [
         $blockchainExplorerProcess,
