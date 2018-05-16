@@ -5,7 +5,7 @@ services:
     #mem_limit: 256m
     image: redis:3
     ports:
-      - "6379:6379"
+      - "6380:6379"
     command: [
           "bash", "-c",
           '
@@ -22,8 +22,8 @@ services:
     build:
       context: ./docker/local
       dockerfile: dockerfile-php7-fpm
-    ports:
-      - "9000:9000"
+    #ports:
+    #  - "9000:9000"
     volumes:
       - '.:/var/www/golos-event-listener'
     environment:
