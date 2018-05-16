@@ -9,6 +9,7 @@ use GolosPhpEventListener\app\process\ProcessInterface;
 use GrapheneNodeClient\Commands\CommandQueryData;
 use GrapheneNodeClient\Commands\Single\GetContentCommand;
 use MyApp\Db\RedisManager;
+use MyApp\Handlers\GotTransferHandler;
 
 /**
  *
@@ -19,7 +20,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
     protected $isRunning         = true;
     protected $rewardUserPercent = 80;
     protected $priority          = 16;
-    protected $memoRatingReward  = 'Reward authors from The Alternative STEEM TOPs {post_link}';
+    protected $memoRatingReward  = 'Reward authors from The Alternative STEEM TOPs {post_link} (You can OFF rewards by transfer with "' . GotTransferHandler::COMMAND_REWARDS_OFF . '" memo)';
     protected $postLink          = 'https://steemit.com/{category}/@{author}/{permlink}';
     protected $connectorClassName = 'GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector';
     protected $rewardToken1 = 'SBD';
@@ -116,6 +117,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                 // got value in 1000 times more
                 $gbgReward = floor(str_replace(' ' . $this->rewardToken1, '', $first['sbd_payout']) * $rewardPart / $totalUsers * 1000);
                 $golosReward = floor(str_replace(' ' . $this->rewardToken2, '', $first['steem_payout']) * $rewardPart / $totalUsers * 1000);
+                $stopListUsers = $this->getDBManager()->ratingUsersRewardsStopListGet();
 
                 if ($gbgReward > 0 || $golosReward > 0) {
                     $rewards = [];
@@ -125,7 +127,8 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     if ($golosReward > 0) {
                         $rewards[] = number_format($golosReward / 1000, 3, '.', '') . ' ' . $this->rewardToken2;
                     }
-                    foreach ($meta['users'] as $user) {
+                    $users = array_diff($meta['users'], $stopListUsers);
+                    foreach ($users as $user) {
                         $dataForReward = [
                             'author'  => $user,
                             'rewards' => $rewards,
@@ -134,7 +137,8 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                         $this->getDBManager()->ratingUsersRewardAddToQueue($dataForReward);
                     }
                     $usersTotal = count($meta['users']);
-                    echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersTotal} users added for reward (" . implode(', ', $rewards) . ") from post /{$data['category']}/@{$data['author']}/{$data['permlink']}";
+                    $usersRewarded = count($users);
+                    echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersRewarded} from {$usersTotal} users added for reward (" . implode(', ', $rewards) . ") from post /{$data['category']}/@{$data['author']}/{$data['permlink']}";
                 }
             }
             $this->getDBManager()->ratingPostRewardRemovePostFromQueue($first);
