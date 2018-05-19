@@ -48,7 +48,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      */
     public function initConnector()
     {
-        $this->connector = new $this->connectorClassName();
+        $this->connector = new $this->connectorClassName(700);
     }
 
     /**
