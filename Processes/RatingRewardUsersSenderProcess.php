@@ -86,7 +86,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
     {
         pcntl_setpriority($this->priority, getmypid());
 
-        echo PHP_EOL . date('Y.m.d H:i:s') . ' RatingRewardUsersSenderProcess is running';
+        echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersSenderProcess is running';
 
         $total = $this->getDBManager()->ratingUsersRewardGetQueueLength();
         $connector = null;
