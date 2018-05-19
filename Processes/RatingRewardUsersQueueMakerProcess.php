@@ -92,15 +92,16 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
             $commandQuery->setParamByKey('1', $first['permlink']);//onlyVirtual
 
             $command = new GetContentCommand($this->getConnector());
-            $data = $command->execute(
+            $answer = $command->execute(
                 $commandQuery
             );
             //if got wrong answer from api
-            if (!isset($data['result'])) {
+            if (!isset($answer['result'])) {
                 continue;
             }
+            $data = $answer['result'];
 
-            $meta = json_decode($data['result']['json_metadata'], true);
+            $meta = json_decode($data['json_metadata'], true);
             $totalUsers = count($meta['users']);
             $postLink = str_replace(
                 [
@@ -109,9 +110,9 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     '{permlink}'
                 ],
                 [
-                    $data['result']['category'],
-                    $data['result']['author'],
-                    $data['result']['permlink']
+                    $data['category'],
+                    $data['author'],
+                    $data['permlink']
                 ],
                 $this->postLink
             );
