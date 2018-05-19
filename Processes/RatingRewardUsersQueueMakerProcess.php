@@ -98,6 +98,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
             //if got wrong answer from api
             if (!isset($answer['result'])) {
                 continue;
+                echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersQueueMakerProcess got wrong answer, skip post';
             }
             $data = $answer['result'];
 
