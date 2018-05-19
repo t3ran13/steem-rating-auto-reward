@@ -78,7 +78,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
         pcntl_setpriority($this->priority, getmypid());
 
         $listenerId = $this->getId();
-//        echo PHP_EOL . ' - RatingRewardQueueMakerProcess is running';
+        echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersQueueMakerProcess is running';
         $first = $this->getDBManager()->ratingPostRewardGetFirstFromQueue();
 //        echo PHP_EOL . ' - first' . print_r($first, true);
 
@@ -93,11 +93,14 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
 
             $command = new GetContentCommand($this->getConnector());
             $data = $command->execute(
-                $commandQuery,
-                'result'
+                $commandQuery
             );
+            //if got wrong answer from api
+            if (!isset($data['result'])) {
+                continue;
+            }
 
-            $meta = json_decode($data['json_metadata'], true);
+            $meta = json_decode($data['result']['json_metadata'], true);
             $totalUsers = count($meta['users']);
             $postLink = str_replace(
                 [
@@ -106,9 +109,9 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     '{permlink}'
                 ],
                 [
-                    $data['category'],
-                    $data['author'],
-                    $data['permlink']
+                    $data['result']['category'],
+                    $data['result']['author'],
+                    $data['result']['permlink']
                 ],
                 $this->postLink
             );
