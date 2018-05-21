@@ -194,12 +194,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/golos-php-event-listener.git",
-                "reference": "b75bd343499c87eb7f3a1b5f911e743b3b0d5a51"
+                "reference": "70348c80904d9901d9b8d0c15e90f739ecaed9ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/b75bd343499c87eb7f3a1b5f911e743b3b0d5a51",
-                "reference": "b75bd343499c87eb7f3a1b5f911e743b3b0d5a51",
+                "url": "https://api.github.com/repos/t3ran13/golos-php-event-listener/zipball/70348c80904d9901d9b8d0c15e90f739ecaed9ea",
+                "reference": "70348c80904d9901d9b8d0c15e90f739ecaed9ea",
                 "shasum": ""
             },
             "require": {
@@ -230,20 +230,20 @@
                 "Steemit",
                 "event listener"
             ],
-            "time": "2018-05-14T21:17:43+00:00"
+            "time": "2018-05-21T11:35:17+00:00"
         },
         {
             "name": "t3ran13/php-graphene-node-client",
-            "version": "v4.0.6",
+            "version": "v4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/php-graphene-node-client.git",
-                "reference": "29dca4952ea38e306250a3134d75257e5500bbf1"
+                "reference": "ef30fafb8ae645de1e001ac8e197159fa8bfbe4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/29dca4952ea38e306250a3134d75257e5500bbf1",
-                "reference": "29dca4952ea38e306250a3134d75257e5500bbf1",
+                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/ef30fafb8ae645de1e001ac8e197159fa8bfbe4f",
+                "reference": "ef30fafb8ae645de1e001ac8e197159fa8bfbe4f",
                 "shasum": ""
             },
             "require": {
@@ -277,7 +277,7 @@
                 "Steemit",
                 "Web Socket client for graphene node"
             ],
-            "time": "2018-05-15T21:36:17+00:00"
+            "time": "2018-05-21T11:18:14+00:00"
         },
         {
             "name": "textalk/websocket",
