@@ -24,7 +24,7 @@ class BlockchainExplorerProcess extends \GolosPhpEventListener\app\process\Block
      */
     public function initConnector()
     {
-        $this->connector = new $this->connectorClassName(500);
+        $this->connector = new $this->connectorClassName(1000);
     }
 
     public function getCurrentBlockNumber()

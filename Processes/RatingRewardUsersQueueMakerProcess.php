@@ -40,7 +40,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
      */
     public function initConnector()
     {
-        $this->connector = new $this->connectorClassName(700);
+        $this->connector = new $this->connectorClassName(1000);
     }
 
     /**
