@@ -31,6 +31,6 @@ class BlockchainExplorerProcess extends \GolosPhpEventListener\app\process\Block
     {
         $currentBlockNumber = parent::getCurrentBlockNumber();
 
-        return $currentBlockNumber - 20;
+        return $currentBlockNumber - 40;
     }
 }
