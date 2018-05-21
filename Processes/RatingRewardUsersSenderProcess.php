@@ -102,7 +102,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
             //transfer agregation to few users
             $chainName = $connector->getPlatform();
             /** @var CommandQueryData $tx */
-            $tx = Transaction::init($connector);
+            $tx = Transaction::init($connector, 'PT3M');
             $opNumber = 0;
             foreach ($list as $data) {
                 foreach ($data['rewards'] as $reward) {
