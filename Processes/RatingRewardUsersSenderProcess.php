@@ -9,6 +9,7 @@ use GolosPhpEventListener\app\process\ProcessAbstract;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use GrapheneNodeClient\Commands\CommandQueryData;
 use GrapheneNodeClient\Commands\Single\BroadcastTransactionSynchronousCommand;
+use GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector;
 use GrapheneNodeClient\Tools\Transaction;
 use MyApp\Db\RedisManager;
 
@@ -22,7 +23,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
     private $rewardPoolName;
     private $rewardPoolWif;
     protected $priority = 17;
-    protected $connectorClassName = 'GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector';
+    protected $connectorClassName = 'MyApp\Processes\SteemitHttpJsonRpcConnector';
 
     /**
      * RatingRewardUsersSenderProcess constructor.
