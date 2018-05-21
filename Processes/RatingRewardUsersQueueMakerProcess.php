@@ -8,6 +8,7 @@ use GolosPhpEventListener\app\process\ProcessAbstract;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use GrapheneNodeClient\Commands\CommandQueryData;
 use GrapheneNodeClient\Commands\Single\GetContentCommand;
+use GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector;
 use MyApp\Db\RedisManager;
 use MyApp\Handlers\GotTransferHandler;
 
@@ -27,7 +28,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
     protected $rewardToken2 = 'STEEM';
 
     /**
-     * @return ConnectorInterface|null
+     * @return ConnectorInterface|null|SteemitHttpJsonRpcConnector
      */
     public function getConnector()
     {
@@ -97,8 +98,12 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
             );
             //if got wrong answer from api
             if (!isset($answer['result'])) {
-                continue;
                 echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersQueueMakerProcess got wrong answer, skip post';
+                continue;
+            } elseif (empty($answer['result'])) {
+                echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersQueueMakerProcess got empty post answer, from connector '
+                    . $this->getConnector()->getCurrentUrl();
+                continue;
             }
             $data = $answer['result'];
 
