@@ -234,16 +234,16 @@
         },
         {
             "name": "t3ran13/php-graphene-node-client",
-            "version": "v4.0.8",
+            "version": "v4.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/t3ran13/php-graphene-node-client.git",
-                "reference": "ef30fafb8ae645de1e001ac8e197159fa8bfbe4f"
+                "reference": "3b846f7a8e3ee9d6f8752ff9c5c55154d55955cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/ef30fafb8ae645de1e001ac8e197159fa8bfbe4f",
-                "reference": "ef30fafb8ae645de1e001ac8e197159fa8bfbe4f",
+                "url": "https://api.github.com/repos/t3ran13/php-graphene-node-client/zipball/3b846f7a8e3ee9d6f8752ff9c5c55154d55955cb",
+                "reference": "3b846f7a8e3ee9d6f8752ff9c5c55154d55955cb",
                 "shasum": ""
             },
             "require": {
@@ -277,7 +277,7 @@
                 "Steemit",
                 "Web Socket client for graphene node"
             ],
-            "time": "2018-05-21T11:18:14+00:00"
+            "time": "2018-05-23T09:13:03+00:00"
         },
         {
             "name": "textalk/websocket",
