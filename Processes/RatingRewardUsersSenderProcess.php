@@ -9,7 +9,9 @@ use GolosPhpEventListener\app\process\ProcessAbstract;
 use GolosPhpEventListener\app\process\ProcessInterface;
 use GrapheneNodeClient\Commands\CommandQueryData;
 use GrapheneNodeClient\Commands\Single\BroadcastTransactionSynchronousCommand;
+use GrapheneNodeClient\Connectors\ConnectorInterface;
 use GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector;
+use GrapheneNodeClient\Tools\Bandwidth;
 use GrapheneNodeClient\Tools\Transaction;
 use MyApp\Db\RedisManager;
 
@@ -123,6 +125,13 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
                 }
             }
             Transaction::sign($chainName, $tx, ['active' => $this->rewardPoolWif]);
+
+            $bandwidth = $this->getTrxBandwidth(json_encode($tx->getParams(),JSON_UNESCAPED_UNICODE));
+            if ($bandwidth['used'] >= $bandwidth['available']) {
+                echo PHP_EOL . date('Y-m-d H:i:s') . ' - account bandwith is not enought for trx : ' . round($bandwidth['used'] / $bandwidth['available'], 3);
+                break;
+            }
+
             $answer = $command->execute(
                 $tx
             );
@@ -132,14 +141,14 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
                     $this->getDBManager()->ratingUsersRewardRemoveFromQueue($data);
                 }
                 $usersTotal = count($list);
-                echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersTotal} users got reward in block {$answer['result']['block_num']}";
+                echo PHP_EOL . date('Y-m-d H:i:s') . " - {$usersTotal} users got reward in block {$answer['result']['block_num']}";
             } else {
-                echo PHP_EOL . date('Y.m.d H:i:s') . ' - error during sending tokens ';
+                echo PHP_EOL . date('Y-m-d H:i:s') . ' - error during sending tokens ';
                 //log about error
             }
         }
 
-        echo PHP_EOL . date('Y.m.d H:i:s') . ' RatingRewardUsersSenderProcess did work';
+        echo PHP_EOL . date('Y-m-d H:i:s') . ' RatingRewardUsersSenderProcess did work';
     }
 
     /**
@@ -165,5 +174,22 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      */
     public function clearParentResources()
     {
+    }
+
+    /**
+     * @param string $trxString
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function getTrxBandwidth($trxString)
+    {
+        $connector = $this->getConnector();
+        $trxString = mb_strlen($trxString, '8bit');
+        $bandwidth = Bandwidth::getBandwidthByAccountName($this->rewardPoolName, 'market', $connector);
+
+        $bandwidth['used'] = $trxString * 10 + $bandwidth['used'];
+
+        return $bandwidth;
     }
 }
