@@ -25,7 +25,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
     private $rewardPoolName;
     private $rewardPoolWif;
     protected $priority = 17;
-    protected $connectorClassName = 'MyApp\Processes\SteemitHttpJsonRpcConnector';
+    protected $connectorClassName = 'GrapheneNodeClient\Connectors\WebSocket\SteemitWSConnector';
 
     /**
      * RatingRewardUsersSenderProcess constructor.
@@ -51,7 +51,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      */
     public function initConnector()
     {
-        $this->connector = new $this->connectorClassName(1000);
+        $this->connector = new $this->connectorClassName(2);
     }
 
     /**
@@ -105,7 +105,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
             //transfer agregation to few users
             $chainName = $connector->getPlatform();
             /** @var CommandQueryData $tx */
-            $tx = Transaction::init($connector, 'PT3M');
+            $tx = Transaction::init($connector, 'PT4M');
             $opNumber = 0;
             foreach ($list as $data) {
                 foreach ($data['rewards'] as $reward) {
@@ -132,6 +132,9 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
                 break;
             }
 
+
+            $connector->setConnectionTimeoutSeconds(20);
+            $connector->setMaxNumberOfTriesToReconnect(2);
             $answer = $command->execute(
                 $tx
             );
@@ -185,6 +188,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
     protected function getTrxBandwidth($trxString)
     {
         $connector = $this->getConnector();
+        $connector->setConnectionTimeoutSeconds(3);
         $trxString = mb_strlen($trxString, '8bit');
         $bandwidth = Bandwidth::getBandwidthByAccountName($this->rewardPoolName, 'market', $connector);
 
