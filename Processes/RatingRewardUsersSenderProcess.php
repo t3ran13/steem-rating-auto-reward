@@ -128,10 +128,10 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
 
             $bandwidth = $this->getTrxBandwidth(json_encode($tx->getParams(),JSON_UNESCAPED_UNICODE));
             if ($bandwidth['used'] >= $bandwidth['available']) {
-                echo PHP_EOL . date('Y-m-d H:i:s') . ' - account bandwith is not enought for trx : ' . round($bandwidth['used'] / $bandwidth['available'], 3);
+                echo PHP_EOL . date('Y-m-d H:i:s') . ' - account bandwidth is not enought for trx : ' . round($bandwidth['used'] / $bandwidth['available'], 3);
                 break;
             }
-
+            echo PHP_EOL . date('Y-m-d H:i:s') . ' - account bandwidth are : used ' . $bandwidth['used'] . ' from ' . $bandwidth['available'];
 
             $connector->setConnectionTimeoutSeconds(20);
             $connector->setMaxNumberOfTriesToReconnect(2);
