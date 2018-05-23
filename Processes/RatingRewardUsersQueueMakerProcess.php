@@ -148,7 +148,7 @@ class RatingRewardUsersQueueMakerProcess extends ProcessAbstract
                     }
                     $usersTotal = count($meta['users']);
                     $usersRewarded = count($users);
-                    echo PHP_EOL . date('Y.m.d H:i:s') . " - {$usersRewarded} from {$usersTotal} users added for reward (" . implode(', ', $rewards) . ") from post /{$data['category']}/@{$data['author']}/{$data['permlink']}";
+                    echo PHP_EOL . date('Y-m-d H:i:s') . " - {$usersRewarded} from {$usersTotal} users added for reward (" . implode(', ', $rewards) . ") from post /{$data['category']}/@{$data['author']}/{$data['permlink']}";
                 }
             }
             $this->getDBManager()->ratingPostRewardRemovePostFromQueue($first);
