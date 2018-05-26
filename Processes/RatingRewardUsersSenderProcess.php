@@ -197,7 +197,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      *
      * @return void
      */
-    public function clearParentResources()
+    public function clearLegacyResourcesInChild()
     {
     }
 
