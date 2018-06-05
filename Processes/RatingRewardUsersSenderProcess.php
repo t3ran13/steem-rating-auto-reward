@@ -122,7 +122,6 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
                             ]
                         ]
                     );
-                    break;
                 }
             }
             Transaction::sign($chainName, $tx, ['active' => $this->rewardPoolWif]);
