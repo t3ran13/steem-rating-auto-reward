@@ -44,6 +44,10 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
      */
     public function getConnector()
     {
+        if ($this->connector === null) {
+            $this->initConnector();
+        }
+
         return $this->connector;
     }
 
@@ -173,7 +177,8 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
         ) {
             try {
                 if ($this->connector === null) {
-                    $this->connector = new SteemitHttpJsonRpcConnector();
+                    $this->connectorClassName = 'GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector';
+                    $this->connector = $this->getConnector();
                 }
                 $connector = $this->connector;
                 $connector->setConnectionTimeoutSeconds(1);
