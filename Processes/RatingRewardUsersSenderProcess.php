@@ -177,8 +177,7 @@ class RatingRewardUsersSenderProcess extends ProcessAbstract
         ) {
             try {
                 if ($this->connector === null) {
-                    $this->connectorClassName = 'GrapheneNodeClient\Connectors\Http\SteemitHttpJsonRpcConnector';
-                    $this->connector = $this->getConnector();
+                    $this->connector = new SteemitHttpJsonRpcConnector();
                 }
                 $connector = $this->connector;
                 $connector->setConnectionTimeoutSeconds(1);
